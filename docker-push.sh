@@ -13,7 +13,7 @@ then
     # add AWS_ACCOUNT_ID, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY env vars
     eval $(aws ecr get-login --region ap-south-1 --no-include-email)
     export TAG=$TRAVIS_BRANCH
-    export REPO=$AWS_ACCOUNT_ID.dkr.ecr.us-west-1.amazonaws.com
+    export REPO=$AWS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com
   fi
 
   if [ "$TRAVIS_BRANCH" == "staging" ] || \
