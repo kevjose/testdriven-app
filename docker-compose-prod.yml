@@ -13,6 +13,7 @@ services:
       - APP_SETTINGS=project.config.ProductionConfig
       - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_prod
       - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+      - SECRET_KEY=${SECRET_KEY}  # new
     depends_on:  # new
       - users-db
 
@@ -49,3 +50,47 @@ services:
     depends_on:
       - users
       - client
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  web:
+    build:
+      context: ./services/plutus/api
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5004:5000"
+    depends_on:
+      - redis
+
+
+  worker:
+    build:
+      context: ./services/plutus/celery_queue
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+
+  monitor:
+    build:
+      context: ./services/plutus/celery_queue
+      dockerfile: Dockerfile
+    ports:
+      - "5555:5555"
+    entrypoint: flower
+    command:  -A tasks --port=5555 --broker=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  beat:
+    build:
+      context: ./services/plutus/celery_queue
+      dockerfile: Dockerfile
+    entrypoint: celery beat
+    command:  -A tasks --schedule=/tmp/celerybeat-schedule --loglevel=INFO --pidfile=/tmp/celerybeat.pid
+    depends_on:
+      - redis
+      - web

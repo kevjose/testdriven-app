@@ -1,0 +1,29 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "Users Service",
+    "description": "Swagger spec for documenting the users service"
+  },
+  "servers": [
+    {
+      "url": "http://localhost"
+    }
+  ],
+  "paths": {
+    "/users/ping": {
+      "get": {
+        "summary": "Just a sanity check",
+        "responses": {
+          "200": {
+            "description": "Will return 'pong!'"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+    }
+  }
+}
